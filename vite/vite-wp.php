@@ -1,5 +1,5 @@
 <?php
-namespace FFPlugin\PluginName;
+namespace FFPlugin\LeadTracker;
 
 define(__NAMESPACE__.'\VITE_PATH', PLUGIN_PATH);
 define(__NAMESPACE__.'\VITE_URL', PLUGIN_URL);
@@ -44,7 +44,7 @@ function vite_enqueue_build( $handle, $src, $css_only ){
     vite_enqueue_css( $handle, $asset );
     if( $css_only ) return;
  
-    $js_src = VITE_URL.'/dist/'.$asset->file;
+    $js_src = VITE_URL.'dist/'.$asset->file;
     wp_enqueue_script($handle, $js_src, [], null, true);
     
     vite_enqueue_js_filter( $handle );
@@ -54,7 +54,7 @@ function vite_enqueue_css( $handle, $asset ){
     if( !isset($asset->css) ) return;
     $i = 0;
     foreach( $asset->css as $src ) { $i++;
-        $css_src = VITE_URL.'/dist/'.$src;
+        $css_src = VITE_URL.'dist/'.$src;
         $css_handle = $handle .'-css-'. $i;
         wp_enqueue_style( $css_handle, $css_src );
     }

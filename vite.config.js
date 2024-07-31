@@ -6,7 +6,7 @@ export default {
 	plugins: [
 		v4wp({
 			input: {
-				index: 'src/index.js',
+				// index: 'src/index.js',
 				admin: 'src/admin/admin.js',
 			},
 			outDir: 'dist',

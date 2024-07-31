@@ -1,0 +1,8 @@
+#generate_csv_button {
+    margin-left: 40px;
+
+    &.loading {
+        opacity: .5;
+        cursor: progress;
+    }
+}
