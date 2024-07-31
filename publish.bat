@@ -1,10 +1,13 @@
 @echo off
 setlocal
 
-set "plugin_name=plugin-boilerplate"
+set "source_path=%CD%"
+
+@REM get current folder name, set as plugin_name
+for %%A in ("%source_path%") do set "plugin_name=%%~nxA"
+
 set "zip_file=%plugin_name%.zip"
 
-set "source_path=%CD%"
 set "exclude=node_modules;.git;zip.ps1;publish.bat;.gitignore;jsconfig.json;package.json;package-lock.json;wp-manifest.cjs;vite.config.js;%zip_file%"
 
 echo Creating zip file...
