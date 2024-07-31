@@ -22,5 +22,3 @@ echo Uploading to remote(%install_name%)...
 scp %zip_file% %ssh_host%:%remote_path%
 
 endlocal
-
-pause
