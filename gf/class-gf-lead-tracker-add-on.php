@@ -19,19 +19,20 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
 	}
 
     public function init() {
+
         parent::init();
+
         add_action( 'gform_form_settings_page_'.$this->get_slug(), function(){
             include 'export-scripts.php';
         });
 
+        
         add_action( 'wp_ajax_ff_gf_generate_csv', [ $this, 'generate_csv_ajax' ] );
+
+        // add_action( 'wp_footer', [ $this, 'frontend_test' ] );
     }
     
 	public function form_settings_fields( $form ) {
-
-        // pre_debug($form['id']);
-        // $form_settings = $this->get_form_settings($form);
-        // pre_debug( $form_settings['export_columns'] );
         
         $setting_fields = [];
 
@@ -50,6 +51,16 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
             ),
         ];
 
+        $setting_fields[] = array(
+            'type'    => 'checkbox',
+            'choices' => array(
+                array(
+                    'label' => esc_html__( 'Exclude older entries since last export', 'ff' ),
+                    'name'  => 'exclude_entries_since_last_export',
+                ),
+            ),
+        );
+
 		return [
             [
                 'title'  => esc_html__( '5x5 Lead Tracker Settings', 'ff' ),
@@ -60,25 +71,36 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
 
     public function generate_csv_ajax(){
 
+        $debug = [];
+
         $form_id = $_POST['form_id'];
+        $addon_slug = $_POST['addon_slug'];
 
         $form = GFAPI::get_form( $form_id );
-        $entries = GFAPI::get_entries( $form_id );
+        $form_settings = $form[$addon_slug];
 
-        $columns = $_POST['columns'];
+        $entries = GFAPI::get_entries( $form_id );
         
         // headers
         $headers = [];
-        foreach( $columns as $column ) {
-            $headers[] = $column['label'];
+        foreach( $form_settings['export_columns'] as $item ) {
+            $headers[] = $item['custom_key'];
         }
 
         // rows
         $rows = [];
         foreach( $entries as $entry ) {
+
+            if( $form_settings['exclude_entries_since_last_export'] ) {
+                if( $entry['date_created'] < $form_settings['last_export_date'] ) {
+                    // exclude entries where create date is older since last export
+                    continue;
+                }
+            }
+
             $row = [];
-            foreach( $columns as $column ) {
-                $row[] = $entry[$column['field_id']] ?? '';
+            foreach( $form_settings['export_columns'] as $item ) {
+                $row[] = $entry[$item['value']] ?? '';
             }
             $rows[] = $row;
         }
@@ -86,8 +108,14 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
         $base_file_name = sanitize_title(get_bloginfo('name')) . '-'. sanitize_title($form['title']);
 
         $file_url = $this->create_csv_file( $base_file_name, $headers, $rows );
+
+        // save last export date
+        $form_settings['last_export_date'] = date('Y-m-d H:i:s');
+        $form[$addon_slug] = $form_settings;
+        GFFormsModel::update_form_meta( $form_id, $form );
         
         wp_send_json([
+            'debug' => $debug,
             'file_url' => $file_url,
         ]);
     }
@@ -136,6 +164,18 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
             }
             closedir( $handle );
         }
+    }
+
+    public function frontend_test(){
+        $form_id = 1;
+        $entries = GFAPI::get_entries( $form_id );
+        // $addon_slug = "gf_lead_tracker_addon";
+        $addon_slug = $this->get_slug();
+        $form = GFAPI::get_form( $form_id );
+        $form_settings = $form[$addon_slug];
+        pre_debug(date('Y-m-d H:i:s'));
+        pre_debug($form_settings);
+        pre_debug($entries);
     }
 
 }
