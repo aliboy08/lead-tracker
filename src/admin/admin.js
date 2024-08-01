@@ -1,7 +1,5 @@
 import './admin.scss';
 
-console.log('admin.js');
-
 const container = document.getElementById('gform-settings-section-5x5-lead-tracker-settings');
 
 const site_data = ff_lead_tracker_data;
