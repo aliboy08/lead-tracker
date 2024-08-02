@@ -127,16 +127,16 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
         $upload_path = $upload_dir['basedir'] . '/temp';
         $upload_url = $upload_dir['baseurl'] . '/temp';
 
-        $file_name = $base_file_name .'-'. date( 'Y-m-d-H-i-s' ) .'.csv';
-
-        $file_path = $upload_path .'/'. $file_name;
-        $file_url = $upload_url .'/'. $file_name;
-
         // create folder if it does not exist yet
         if ( !file_exists($upload_path) ) {
             mkdir($upload_path, 0755, true);
         }
 
+        $file_name = $base_file_name .'-'. date( 'Y-m-d-H-i-s' ) .'.csv';
+
+        $file_path = $upload_path .'/'. $file_name;
+        $file_url = $upload_url .'/'. $file_name;
+        
         // delete old files before creating new
         $this->delete_files( $base_file_name, $upload_path );
 
