@@ -25,11 +25,8 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
         add_action( 'gform_form_settings_page_'.$this->get_slug(), function(){
             include 'export-scripts.php';
         });
-
         
         add_action( 'wp_ajax_ff_gf_generate_csv', [ $this, 'generate_csv_ajax' ] );
-
-        // add_action( 'wp_footer', [ $this, 'frontend_test' ] );
     }
     
 	public function form_settings_fields( $form ) {
@@ -164,18 +161,6 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
             }
             closedir( $handle );
         }
-    }
-
-    public function frontend_test(){
-        $form_id = 1;
-        $entries = GFAPI::get_entries( $form_id );
-        // $addon_slug = "gf_lead_tracker_addon";
-        $addon_slug = $this->get_slug();
-        $form = GFAPI::get_form( $form_id );
-        $form_settings = $form[$addon_slug];
-        pre_debug(date('Y-m-d H:i:s'));
-        pre_debug($form_settings);
-        pre_debug($entries);
     }
 
 }

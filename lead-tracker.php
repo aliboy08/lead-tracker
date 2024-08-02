@@ -3,17 +3,15 @@
  * Plugin name: FF Lead Tracker
  * Plugin URI: https://www.fivebyfive.com.au/
  * Description: Extract data for lead tracking
- * Version: 1.0
+ * Version: 1.1.0
 */
 
-namespace FFPlugin\LeadTracker;
+$vite = new FF_Vite([
+    'id' => 'ff_lead_tracker',
+    'url' => plugins_url('/', __FILE__),
+    'path' => plugin_dir_path(__FILE__),
+]);
 
-define(__NAMESPACE__.'\PLUGIN_NAME', 'Lead Tracker');
-define(__NAMESPACE__.'\PLUGIN_SLUG', 'ff_lead_tracker');
+define('FF_LEAD_TRACKER_VITE', $vite);
 
-define(__NAMESPACE__.'\PLUGIN_URL', plugins_url('/', __FILE__));
-define(__NAMESPACE__.'\PLUGIN_PATH', plugin_dir_path(__FILE__));
-
-include 'vite/vite-wp.php';
-// include 'admin/admin.php';
-include 'gf/add-on.php';
+include 'gravityforms/add-on.php';
