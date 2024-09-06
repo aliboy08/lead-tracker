@@ -1,5 +1,4 @@
 <?php
-
 GFForms::include_addon_framework();
 
 class GF_Lead_Tracker_AddOn extends GFAddOn {
@@ -11,6 +10,7 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
 	private static $_instance = null;
     
 	public static function get_instance() {
+
 		if ( self::$_instance == null ) {
 			self::$_instance = new GF_Lead_Tracker_AddOn();
 		}
@@ -149,18 +149,21 @@ class GF_Lead_Tracker_AddOn extends GFAddOn {
     }
 
     private function delete_files( $base_file_name, $upload_path ){
-        if ( $handle = opendir($upload_path) ) {
-            // Scan through directory: get all files
-            while ( false !== ( $file = readdir($handle) ) ) {
-                if ( $file != "." && $file != ".." ) {
-                    if( strpos( $file, $base_file_name ) !== false ) {
-                        $file_path = $upload_path .'/'. $file;
-                        unlink( $file_path );
-                    }
+
+        $handle = opendir($upload_path);
+        if( !$handle ) return;
+
+        // Scan through directory: get all files
+        while ( false !== ( $file = readdir($handle) ) ) {
+            if ( $file != "." && $file != ".." ) {
+                if( strpos( $file, $base_file_name ) !== false ) {
+                    $file_path = $upload_path .'/'. $file;
+                    unlink( $file_path );
                 }
             }
-            closedir( $handle );
         }
+
+        closedir( $handle );
     }
 
 }
